@@ -1,0 +1,27 @@
+Enable touchpad click in LightDM
+
+Follow this article to enable touchpad clicks and vertical scrolling
+
+Open up a terminal and copy paste the following commands. This would enable touchpad tap to click and vertical edge scrolling.
+
+sudo tee /etc/X11/xorg.conf.d/99-synaptics-overrides.conf <<"EOF"
+Section  "InputClass"
+    Identifier  "touchpad overrides"
+    # This makes this snippet apply to any device with the "synaptics" driver
+    # assigned
+    MatchDriver  "synaptics"
+
+    ####################################
+    ## The lines that you need to add ##
+    # Enable left mouse button by tapping
+    Option  "TapButton1"  "1"
+    # Enable vertical scrolling
+    Option  "VertEdgeScroll"  "1"
+    # Enable right mouse button by tapping lower right corner
+    Option "RBCornerButton" "3"
+    ####################################
+
+EndSection
+EOF
+
+

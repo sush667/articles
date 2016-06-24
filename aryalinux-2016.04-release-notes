@@ -1,0 +1,28 @@
+AryaLinux 2016.04 – Release Notes
+This version of AryaLinux primarily focusses on creating a stable from-scratch system and eliminating as many small nuances as possible that sum up to a not-so 
+happy build experience
+
+    Updated all packages to the latest development of LFS and the current development version of BLFS systemd.
+    Upgraded Mate to 1.12.0
+    Fixed a lot of broken features with alps like selfupdate, clean and updatescripts
+    Eliminated boot time warning messages
+    Incorporated dracut to facilitate the creation of initrd. Initrd is more stable now.
+    The same set of scripts can be utilized to create both 32 bit and 64 bit systems.
+    Scripts now run faster owing to the usage of ccache and MAKEFLAGS
+    Added support for UEFI systems. Though as of now the builder/live disks cannot boot from a UEFI BIOS, AryaLinux can be built from within Ubuntu/Mint/Any 
+other Linux installed in a UEFI BIOS based system.
+    Tested on GPT based Drives and tested successful.
+    Added script to create Live Disks from the generated system
+    Blueman is back with Blueman Applet and has been tested OK. The blueman shipped with version A15 was buggy.
+    Inconsistent build issues were coming up due to toolchain and final system being built on different systems. So had to bring back the whole toolchain 
+building proecss. No more binary toolchain.
+    ccache script
+    Added audacious in favour of banshee. Banshee was too much hard work owing to the vast number of dependencies and primarily dependencies of unmaintained 
+packages.
+    Replaced brasero with xfburn because brasero was resulting in way too much gnome dependencies.
+    Few build scripts like sane and alsa-plugins ask for the username and add it to the corresponding group that they are creating.
+    Rewrote new installer.
+    Most packages now build on multiple CPUs, including toolchain and base-system.
+    Plymouth bootsplash now shows up while booting, thanks to dracut. It makes initramfs creation a breeze.
+
+

@@ -1,0 +1,156 @@
+How to create your own Linux from Scratch 64bit - version 2015
+
+This article applies to version 2015 only. Outlined in this article is the process of creating your own Linux From Scratch the easy way using Aryalinux Builder 
+Disk and buildscripts.
+
+One of the reasons why AryaLinux was created was to automate the process outlines in LFS/CLFS and BLFS. In the end, I built scripts that would build the whole 
+system ground up. So if you want to create your own 64 bit Linux from Scratch, the AryaLinux way then read further.
+Part 1 : Base System
+
+    Download the AryaLinux Live ISO from here and write to Pen Drive or DVD.
+    Restart your computer and boot into the DVD/Pen Drive with AryaLinux in it. (Boot device selection key while booting ranges from F2 to F9 to F12 depending 
+on your system. You may also change the system boot sequence to the same effect)
+    Once the computer boots up completely you would see the desktop. In case you want the desktop in a different language, log out, change the locale at the top 
+right corner of the screen and re-login as aryaLinux, the password is aryalinux.
+    Once you are at the desktop, Open up a terminal and issue the following set of commands:
+
+    sudo su
+    cd /root/scripts
+    ./1.sh
+
+    You would be prompted to enter the name of your root, swap and home partition and few other details like locale, domain, nameserver etc. You can simply hit 
+enter to skip entering any of the detail. Once done, the script would format the partition and extract out the toolchain into the destination partition to build 
+the rest of the system. Then when its done, go ahead and execute the next script:
+
+    cd /sources
+    ./2.sh
+    rm -rvf build-log
+    ./3.sh
+
+    This would trigger the build process and packages would start getting built one by one. Once glibc gets built it would be asking you to enter the locale. 
+You need to wait till that happens. After you have chosen the locale settings, you can relax for the next hour or so till the rest of the system gets built. 
+Once done, just follow the instructions that would be displayed just before the script ends. After that its simple. Just execute the next script:
+
+    ./4.sh
+
+    followed by the last script:
+
+    ./5.sh
+
+    and enter whatever information is asked for by the scripts. Do not close this terminal in case you would want to build X-Server(for GUI) and the desktop 
+environment(XFCE or Mate).
+
+Part 2 : Graphical Desktop, Desktop Environment and applications
+
+Of course you can do this your own way but I highly recommend using alps a python based package building and dependency resolution script that would do most of 
+the heavy lifting for you. Alps is already a part of the installation as of now and the rest of the build/installation can be done using alps.
+
+    Now you can install packages one by one using alps. In the beginning let’s install some essential packages that are either dependencies for other packages 
+or are runtime requirements or maybe plain useful:
+
+    alps install profile nano openssl which wget cacerts python2 python3 ntfs-3g fuse lvm2 parted gptfdisk shadow sudo usbutils pciutils openssh
+
+    This can be followed by the installation of X Server:
+
+    alps install xserver-meta xorg-drivers-meta libva-drivers
+    sudo rm /etc/X11/xorg.conf.d/*
+
+    To install XFCE, run the following command once you are done with x-server:
+
+    alps install xfce-desktop-meta xfce-apps-meta network-manager-applet ModemManager
+    sudo systemctl enable lightdm.service
+
+    To install Mate, run the following command:
+
+    alps install libffi expat python2 pcre desktop-file-utils intltool libgpg-error libgcrypt libtasn1 p11-kit glib2 which libpng libxml2 nettle gnutls sqlite 
+python3 gobject-introspection atk nasm yasm libjpeg openjpeg openjpeg2 libtiff gdk-pixbuf pixman cairo icu pango hicolor-icon-theme gtk2 uri at-spi2-core gtk3 
+gcr gnome-keyring libwnck libglade pygobject pygtk libogg libvorbis alsa-lib alsa-plugins alsa-utils gstreamer libcanberra libnotify gperf libusb nspr nss zip 
+js polkit pm-utils upower iso-codes libxklavier consolekit itstool gtk-doc glib-networking libsoup perl-xml-simple icon-naming-utils librsvg enchant libunique 
+vte libgtop libsigc cairomm glibmm pangomm atkmm gtkmm libatasmart udisks gvfs gtksourceview nspr sqlite nss libnl expat intltool yelp-xsl vala librsvg 
+libsecret sqlite libxml2 gsettings-desktop-schemas glib-networking libsoup libwebp ruby enchant GConf geoclue hicolor-icon-theme gstreamer gst-plugins-base 
+gst-plugins-good gst-plugins-bad gst-plugins-ugly yelp ModemManager networkmanager desktop-file-utils wpa_supplicant desktop-file-utils mate-common dconf 
+mate-desktop libmatekbd libmateweather mate-icon-theme shared-mime-info caja mate-polkit zenity marco mate-settings-daemon mate-session-manager mate-menus 
+libwnck-1 mate-panel mate-backgrounds mate-themes mate-notification-daemon mate-control-center mate-screensaver vte2 mate-terminal mozo eom mate-applets 
+mate-calc mate-power-manager mate-system-monitor mate-utils engrampa caja-extensions gsettings-desktop-schemas gtksourceview2 pluma libsecret poppler atril 
+mate-icon-theme-faenza libunique gstreamer pango gst-plugins-base libsndfile json-c pulseaudio mate-media murrine pixbuf-engine libsecret network-manager-applet 
+gnome-themes-standard adwaita-icon-theme lightdm lightdm-gtk-greeter
+    sudo systemctl enable lightdm.service
+
+    There are many packages that are not mandatory but recommended, you may remove them from the list if you wish.
+    To install Gnome3 execute the following command:
+
+    alps install yelp-xsl gtk-doc dconf libassuan libksba pth pinentry gnupg gcr geocode-glib libgweather librest telepathy-glib gnome-online-accounts uhttpmock 
+liboauth libgdata libical evolution-data-server accountsservice cogl libinput clutter clutter-gtk gnome-desktop gnome-menus bluez sbc ibus libwacom 
+gnome-settings-daemon libgtop libpwquality gmime totem-pl-parser grilo grilo-plugins libmediaart libgsf valgrind exempi libgee nautilus tracker nautilus-sendto 
+gnome-bluetooth yaml appstream-glib appdata-tools clutter-gst2 gnome-video-effects cheese colord-gtk mitkrb gnome-control-center perl-xml-namespacesupport 
+perl-xml-sax-base perl-xml-sax perl-xml-sax-expat perl-xml-libxml perl-xml-tie-ixhash perl-xml-simple icon-naming-utils gnome-icon-theme 
+gnome-icon-theme-symbolic gnome-icon-theme-extras gnome-keyring gnome-session caribou JS2 gjs zenity mutter gdm gnome-backgrounds telepathy-mission-control 
+gnome-shell telepathy-logger vino gnome-user-docs baobab libnice farstream folks telepathy-farstream libchamplain telepathy-gabble telepathy-haze telepathy-idle 
+telepathy-salut empathy webkit2gtk epiphany eog evince gnome-calculator gnome-contacts gnome-dictionary gnome-font-viewer gnome-screenshot gtkmm3 
+gnome-system-monitor vte gnome-terminal gucharmap libmusicbrainz5 sushi gst10-libav totem yelp gnome-disk-utility gnome-shell-extensions python-modules#pyatspi2 
+gc libunistring guile dvd-rw-tools brasero gtkhtml gsl bogofilter highlight evolution file-roller gtk-vnc gnome-clocks exiv2 gnome-color-manager gfbgraph 
+libzapojit gnome-online-miners gnome-logs gnome-maps gnome-nettool gnome-photos gnome-tweak-tool gnome-weather freeglut graphviz gpgme seahorse vinagre
+    sudo systemctl enable lightdm.service
+
+    After that you can restart the system and log into your newly created GNU/Linux. In order to have a more complete system, you need to install things like 
+media players, Libreoffice and accessories. There are a whole lot of applications that can be installed depending on your preferences and the desktop 
+environment you choose.
+
+Applications
+
+    The foremost set of applications that may needed to be installed after the desktop environment is up are the ones that make hardware work. Hardware like 
+Network, Audio etc.The following command installs most essential network components and applications:
+
+    alps install wireless_tool wpa_supplicant networkmanager network-manager-applet net-tools network-apps inetutils ModemManager usb_modeswitch
+
+    In order to install multimedia codecs install these packages. They should give you a pretty good coverage for the various audio and video types:
+
+    alps install alsa-lib alsa-plugins alsa-tools alsa-firmware audiofile faac faad2 farstream fdk-aac flac grilo gst10-libav liba52 libao libass libcanberra 
+libdiscid libdvdcss libdvdread libdvdnav libdv libmad libmpeg2 libmusicbrainz libmusicbrainz5 libogg libquicktime libsamplerate libsndfile libtheora libvorbis 
+libvpx opal opus sbc sdl sound-theme-freedesktop soundtouch speex taglib xvid pulseaudio mtp goom libtar xdg-utils aalib fribidi vlc simple-screen-recorder 
+grilo-plugins
+
+    As far as gimp is concerned, its pretty straightforward:
+
+    alps install gimp
+
+    Gimp is also a recommended dependency for CUPS so installing GIMP helps in that regard. For installing cups the following command should suffice
+
+    alps install cups cups-filters
+
+    Libreoffice installation is straightforward but takes really long (close to 4 hours on my i3 4GB laptop)
+
+    alps install libreoffice
+
+    The following internet applications are definitely needed for most desktops:
+
+    alps install firefox thunderbird xchat pidgin transmission tigervnc
+
+    What else is remaining? Well, if you want to give your newly created desktop the look and feel of AryaLinux, then you can install the following:
+
+    alps install aryalinux-fonts  aryalinux-icons  aryalinux-themes  aryalinux-wallpapers
+
+    For the XFCE Desktop you also need to install the whisker-menu-plugin
+
+    alps install xfce4-whiskermenu-plugin
+
+    Once these packages are installed, you can build customize your desktop to look like AryaLinux. Just follow these steps:
+        Set the theme as Ambiance-Flat-Aqua
+        Set the icon theme as Vivacious-Colors
+        Set the Font to Open Sans 10, Antialiased, Full Hinting and RGB
+    To install compiz(Desktop effects):
+
+    alps install compiz
+
+    After compiz is installed, open up the Compiz Config Settings Manager. Search for Window Decoration and check it. You can check other options as well like 
+Animations, Desktop Cube, Window Resize, Window Preview etc. Now you can enable desktop effects by doing Ctrl + f2 and entering startcompiz If you want compiz 
+to run at startup add it to startup applications.
+    Multimedia Applications like Banshee, Exaile and VLC can be installed by doing:
+
+    alps install banshee exaile vlc
+
+    For XFCE right click on all panels and open up properties and delete all of them except one. Drag it to the bottom and add whisker menu to it, couple of 
+launchers, window buttons, notification area and date-time plugin. Right click on the whisker menu icon and you can change the look and feel of the whisker menu 
+as well.
+
+

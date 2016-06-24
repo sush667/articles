@@ -1,0 +1,61 @@
+Why would anyone build a linux from source when so many wonderful distros are around?
+
+What Linux distro you choose in the first place and what Linux distro you stick to purely a matter of personal preference. While most people would not like 
+going over the whole hassle of building a system from scratch, there are others would love building, things with their own hands. This also gives you the 
+freedom of choosing what the end result is going to be like. I would not say performance would be a compelling reason because given the kind of computers we 
+have today, you would hardy notice the difference. That being said, yes there is definitely a performance bump when you use a system that’s built from scratch 
+because the system is compiled to your processor architecture thus leveraging the full capacity of your computing hardware. In case you custom build the kernel 
+rather than choosing to build kernel the generic way, you end up having a much faster bootup time. I have also noticed less memory and processor consumption 
+compared to other distros. As for me the reason why I build my own System from Scratch is because doing so gives me true freedom that Open Source promises.
+
+On the other hand remastering an existing distro to create your own though might sound easier, it has its own problems unless you want to just change the 
+wallpaper and themes and put some applications here and there. The challenges that lie ahead of remastering are equally great if not greater than when you build 
+from scratch by compiling the source code.
+Go to top
+
+What is the difference between LFS and AryaLinux? Is AryaLinux unofficial ALFS?
+
+Though AryaLinux is based on LFS, its not LFS. In true sense LFS is more of a concept, an idea rather than a distro. In my opinion all distros are LFS because 
+somewhere or the other someone built it from scratch whether it be folks at Fedora or Debian or Crux or Nutyx. Its just that the way its distributed and the way 
+end users use it is different. Now getting back to the question, we have used the instructions present in the LFS and BLFS books to create build scripts that 
+help in creating AryaLinux. We have also added a lot of our own build scripts for packages that are not a part of the LFS and BLFS books like the Mate Desktop 
+Environment etc. We are thankful to a lot of extremely successful projects out there like ArchLinux, Gentoo and LFS for we have chipped in something or the 
+other from all of them.
+
+The builder disk concept of AryaLinux is yes quite same as the concept of ALFS but then again, we never used any stuff indirectly from the ALFS project.
+Go to top
+
+What makes AryaLinux different from the others? Why should I put my money on it?
+This is my favourite. The difference between AryaLinux and other distros is almost the same as the difference between pizza you make and the pizza you order. 
+While the pizza you order has fair chances of being better than what you could cook, yet self-made food does taste better to few people like me. And given some 
+time and practise one just gets better and better at building one’s own System from Scratch like the whole pizza thing. Till you can start your own Pizza joint. 
+This is what Arya’s journey has been like so far. When I started off building my first System from scratch it took me well over two months back in 2008 when 
+internet was expensive and slow and online/offline help not so abundant. Fast forward 8 years and AryaLinux is a distro.
+Go to top
+
+What can I use AryaLinux for?
+Well it’s up to you. Use the build scripts and create a server or create a desktop to your liking. Or if you are game for it use the build scripts to build the 
+next popular Operating System for Smartphones!
+Go to top
+
+What are these build scripts?
+Build scripts are shell scripts that download, compile and install the source code of several packages that AryaLinux is comprised of. You need to see the build 
+scripts to understand what they are and what they do. If you could read any build script for any package located in the /var/cache/alps/scripts/ directory, you 
+would notice that its a very simple bash script that just downloads the tarball for the package, builds it according to the commands provided in the LFS/BLFS 
+books and then does the cleanup. It also contains the list of dependent packages.
+Go to top
+
+Why the name Arya? And what’s with these codenames?
+Aryavarth is what India used to be called before the world started recognizing us as Bharat and India much later. This distro is dedicated to our great nation, 
+one of the world’s oldest civilization and seat of knowledge. The codenames for arya dont follow any conventions or rules as such. We just feel like giving a 
+name and we give it mostly influened by things and events around us. Like the codename of version 2016 is going to be Dawn of justice. Why? Simply because we 
+really liked the movie. That’s it!
+Go to top
+
+What is the Package Manager in AryaLinux?
+We use the ALPS(AryaLinux Packaging System) to build/install packages. Its unlike package managers in other distributions like rpm or apt, there is no provision 
+for things like uninstalling, updating, upgrading etc, like most other package managers provide. The name is alps because it sounds nice but all that alps is a 
+simple python script that does a pretty good job at installing stuff, resolving dependencies and maintaining track of packages that are installed yet we still 
+think there is heavy scope for improvement. In near future, we would be incorporating features into newer features into AryaLinux like DESTDIR method of 
+installation, building of package binary tarballs etc.
+Go to top

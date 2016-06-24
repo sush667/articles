@@ -1,0 +1,32 @@
+ALPS troubleshooting
+
+This article outlines few issues that may come up while running alps and how to fix them
+
+Broken Download Link
+In case alps fails due to a broken download link, then use alps to download the package using some other location by using the alps src command. First of all 
+open up the browser and search for the same package name as alps was trying to download. Let’s assume while installing parted, alps tried downloading the 
+tarball from the following link:
+http://ftp.gnu.org/gnu/parted/parted-3.2.tar.xz
+and it failed. Then search for the package tarball name online. Like in this case the tarball name is parted-3.2.tar.xz. So I search for this and found that it 
+can be downloaded from the following alternate link:
+http://pkgs.fedoraproject.org/repo/pkgs/parted/parted-3.2.tar.xz/0247b6a7b314f8edeb618159fa95f9cb/parted-3.2.tar.xz
+So the next thing I do is run:
+
+alps src http://pkgs.fedoraproject.org/repo/pkgs/parted/parted-3.2.tar.xz/0247b6a7b314f8edeb618159fa95f9cb/parted-3.2.tar.xz
+
+That would download the package tarball to appropriate location. Now I can continue installing by running alps install… again.
+Failure in the build scripts
+Build scripts might fail due to one of the following reasons:
+
+    Dependencies were not installed before the package was installed
+    Some command in the build scripts failed.
+    Unknown reasons
+
+In any case we would appreciate if you could start a thread highlighting the failure in our linuxquestions.org forum and we would look into the matter and try 
+to reply as soon as possible. Its also possible that someone else might have encountered the same issue and would reply you back. Now, in case some dependency 
+was not met and a build failed, you would see that while the script’s configure part would be running. Please note the package which is missing and try to find 
+out the build script for the same in the scripts directory: /var/cache/alps/scripts. In case you find a script there, then run alps install <script name without 
+.sh> and then retry. In case some command in the build script failed, then please copy as much as log information as you can and post the same in this thread. 
+We would surely try assisting you as soon as we can. In other cases, please try seaching online if you find a solution because that is what we would do as well 
+and in case something works for you, please let us know. We would fix and re-upload the script.
+

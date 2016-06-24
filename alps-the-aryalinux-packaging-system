@@ -1,0 +1,47 @@
+ALPS – The AryaLinux Packaging System
+
+This article enlists the features of alps and what it can do
+
+ALPS is a simple python script that resolves dependencies and installs packages that are specified in the build scripts. Apart from dependency resolution and 
+package installation, alps also supports few other things. In order to see what all options alps can take run the following from the terminal:
+
+alps help
+
+alps commands
+
+alps install [space separated package list...]
+
+This command downloads tarballs for the packages specified and builds/installs them as per the instructions in the build-script.
+
+alps updatescripts
+
+Updates the scripts for the present release. When bugs are found in scripts, we fix them and upload them. This command downloads the most recent scripts for the 
+current release.
+
+alps selfupdate
+
+As and when new features are added to alps or broken things are fixed we upload newer versions of alps online. This command downloads and updates alps to the 
+latest version
+
+alps clean
+
+alps downloads source tarballs to /var/cache/alps/sources. Once the build is completed, these tarballs are not deleted. If for saving space, you want to delete 
+these tarballs, this command would come handy.
+
+alps src <url>
+
+Sometimes the download URLs of tarballs in scripts are broken. In such a case you can search for the tarball online and download it from an alternate location. 
+This command takes the URL of the alternate location and downloads the tarball from there into /var/cache/alps/source. Once the download is complete, you can 
+re-run the install for the package that were trying to install. Since alps would find it in /var/cache/alps/source already, it would not try downloading the 
+file again and would continue with the installation.
+
+This might also come in handy when some tarball gets partially downloaded and script would fail due to not being able to untar the archive. In such a case, you 
+can download the tarball from an alternate source or retry the download from the same source using this command
+Tips and Troubleshooting
+
+    Sometimes alps might fail to resolve dependencies correctly and individual package installation fails. In that case all you have to do is re-issue the alps 
+install command with the dependency package name first followed by that package name that failed due to dependency
+    If you want to cancel the build process in the middle for any reason, just press Ctrl+C and the process would be terminated.
+    Keep on periodically running alps selfupdate and alps updatescripts to keep alps and the build scripts up-to-date
+
+

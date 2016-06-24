@@ -1,0 +1,180 @@
+AryaLinux – Build process in details (Using the builder disk)
+
+This article outlines the process of building AryaLinux inside from the AryaLinux Builder Disk.
+
+Watch the video for this process here
+
+Before getting started
+
+Please note that if you have hibernate your existing Linux system and you are specifying the swap partition while building AryaLinux, you would not be able to 
+resume from hibernation in the existing Linux system. This would not be a problem however if you either don’t have another Linux installed or if that has been 
+shutdown and not hibernated or if you do not use a swap partition at all.
+
+Before getting started please create a partition in your system that would of at least 10GB size. In case you are a Windoze user, you may do so by using the 
+Disk Management tool and if you are a Linux user, you can use either parted or fdisk. As of now the following partition table types have been tested and found 
+working:
+
+    MBR partition table
+    GPT partition table
+
+Step 1: Preparing the Builder Disk
+
+Download the builder disk iso from this link. Burn the ISO to a DVD or write it onto a pen-drive. To write the ISO onto a pen drive, in case you are running 
+Windoze, you can use the Unetbootin tool and if you are running Linux, you can use the command given below. Please change /dev/sdb to the appropriate device 
+corresponding to your pen drive.
+
+dd if=aryalinux-builder-x86_64-2016.04.iso of=/dev/sdb # for the 64 bit builder DVD
+dd if=aryalinux-builder-i686-2016.04.iso of=/dev/sdb # for the 64 bit builder DVD
+
+Restart the system and boot from the DVD/Pen drive that you just prepared. After booting up, you would be asked to enter the username and password. Enter root 
+for username and aryalinux for password
+Step 2. Building the toolchain
+
+The process of building AryaLinux starts by creating the toolchain. The toolchain is a set of software comprising of the compiler(gcc), C libraries(glibc) and 
+few utitlity software that we would be utilizing to build our new system. Although you can use the host-provided versions of these tools but to make sure that 
+the new system that we are creating does not inherit anything from our host system, we need to build the toolchain.
+
+To carry out the first step you need to be the root user. So carry out the following commands:
+
+sudo su
+cd
+
+This would log you in as root (notice that the color of prompt changes to red) and place you in the home directory of the root user. Now enter the following 
+commands:
+
+cd scripts
+./1.sh
+
+Once you enter ./1.sh, the build scripts are launched. The first build script(1.sh) would ask you some general information which you need to answer before 
+proceeding. These are the questions that would be prompted for:
+
+Enter device name /dev/sda
+Enter the root partition /dev/sda2
+Enter the swap partition /dev/sda3
+Enter the home partition /dev/sda4
+Enter the hostname aryalinux
+Enter the domain name aryalinux.org
+Enter OS Name AryaLinux
+Enter OS Codename dawnofjustice
+Enter OS Version 2016.04
+Enter locale en_IN.utf8
+Enter paper size A4
+
+In the next screen you would be prompted to select your timezone:
+
+Please identify a location so that time zone rules can be set correctly.
+Please select a continent, ocean, "coord", or "TZ".
+ 1) Africa
+ 2) Americas
+ 3) Antarctica
+ 4) Arctic Ocean
+ 5) Asia
+ 6) Atlantic Ocean
+ 7) Australia
+ 8) Europe
+ 9) Indian Ocean
+10) Pacific Ocean
+11) coord - I want to use geographical coordinates.
+12) TZ - I want to specify the time zone using the Posix TZ format.
+#? 5
+
+Since I want to choose India, I choose 5 – Asia as the continent. In the next screen, you would be asked to choose the country:
+
+Please select a country whose clocks agree with yours.
+ 1) Afghanistan		  18) Israel		    35) Palestine
+ 2) Armenia		  19) Japan		    36) Philippines
+ 3) Azerbaijan		  20) Jordan		    37) Qatar
+ 4) Bahrain		  21) Kazakhstan	    38) Russia
+ 5) Bangladesh		  22) Korea (North)	    39) Saudi Arabia
+ 6) Bhutan		  23) Korea (South)	    40) Singapore
+ 7) Brunei		  24) Kuwait		    41) Sri Lanka
+ 8) Cambodia		  25) Kyrgyzstan	    42) Syria
+ 9) China		  26) Laos		    43) Taiwan
+10) Cyprus		  27) Lebanon		    44) Tajikistan
+11) East Timor		  28) Macau		    45) Thailand
+12) Georgia		  29) Malaysia		    46) Turkmenistan
+13) Hong Kong		  30) Mongolia		    47) United Arab Emirates
+14) India		  31) Myanmar (Burma)	    48) Uzbekistan
+15) Indonesia		  32) Nepal		    49) Vietnam
+16) Iran		  33) Oman		    50) Yemen
+17) Iraq		  34) Pakistan
+#? 14
+
+The code for India is 14, so I enter 14 here. Now comes the confirmation. Just enter 1 here.
+
+The following information has been given:
+
+	India
+
+Therefore TZ='Asia/Kolkata' will be used.
+Local time is now:	Sat Apr 16 08:44:15 IST 2016.
+Universal Time is now:	Sat Apr 16 03:14:15 UTC 2016.
+Is the above information OK?
+1) Yes
+2) No
+#? 1
+
+That’s it. Once you are done, the target partition would be formatted and source code copied and a new user – lfs would be created. Once done, you would be 
+logged in as the lfs user and the following prompt shown:
+
+Entering lfs user. Please execute 2.sh
+dircolors: no SHELL environment variable, and no shell type option given
+lfs@chandrakant-HP-15-Notebook-PC ~ $ 
+
+This is where you have to start the script to build the toolchain by entering:
+
+./2.sh
+
+Once this is done, we can proceed to build the rest of the system. The following message is shown when the script ends:
+
+Done with building the toolchain.
+Enter exit to continue...
+lfs@chandrakant-HP-15-Notebook-PC ~ $ 
+
+Just enter exit to continue the rest of the process
+
+exit
+
+This would change the ownership of the toolchain, create some essential files and directories in the target partition, mount kernel filesystems in the target at 
+appropriate locations and prompt you to continue with the rest of the process:
+
+Would chroot into the toolchain.
+In the prompt, enter resume to start building the final-system.
+
+Now you have to enter resume to continue:
+
+resume
+
+Once this is over, you would be asked to run the next script – 3.sh
+
+Please execute 3.sh
+
+Respond by entering:
+
+./3.sh
+
+This would build the final system and when done, you would have to enter exit twice to continue further. The first exit would get you out of the subprocess we 
+started after resume and the second exit would exit the chroot jail
+
+exit
+exit
+
+We are done with most of the system however the biggest piece of the puzzle is still left – The kernel. So we need to run the next script – 4.sh to build the 
+kernel. This involves entering the following 2 little commands:
+
+cd /sources
+./4.sh
+
+Once the kernel is built and installed you would be asked to enter the root password. This is the system administrator’s password. Then you would be asked your 
+Full name and username and password for your user. Once everything is entered, the scripts would go further and install few more components that are required to 
+run alps like python, wget, sudo etc. This would take a little while. Once everything is done, you can enter exit to exit from the script.
+
+exit
+
+By this time, the bootloader would be installed and the boot list updated. There is a small bug in the os-prober script that prevents the detection of mounted 
+partitions. So when you reboot you might not see the entry for your OS. Do not worry. Just boot into aryalinux and recreate the grub.cfg file to see the 
+complete OS list again. So after logging into you freshly built system, enter
+
+grub-mkconfig -o /boot/grub/grub.cfg
+
+

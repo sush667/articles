@@ -1,0 +1,6 @@
+Welcome to AryaLinux
+###
+AryaLinux is a GNU/Linux system built from scratch using instructions from the LFS and BLFS books. The purpose of the LFS and BLFS books are to guide an 
+average Linux user to build her own Linux Box using source code of the various packages that a GNU/Linux System is composed of. AryaLinux automates the whole 
+process through usage of build scripts and tools that complement the operations that are carried out to build your own Linux from Scratch. We also provide build 
+scripts that help in the creation of packages not provided in the LFS/BLFS books. 

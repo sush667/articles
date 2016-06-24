@@ -1,0 +1,48 @@
+ALPS Internals
+
+This article gives a birds eye view of what ALPS is all about. If you are have installed X-Server on Aryalinux or have gone beyond the point of installing the 
+base system, you must be familiar with alps. This articles takes a deeper look into what makes up alps.
+
+ALPS(AryaLinux Packaging System) as the name suggests is not a packaging system as one would expect. It functions similar to package managers but provides no 
+support for packaging per se. The name kind of rhymes with Debian package manager “apt” so it kind of comes natural to type alps install blah blah similar to 
+apt-get install blah blah.
+Well alps is a python script written to execute build scripts. Build Scripts are bash scripts that download source tarballs, extract them, run build commands 
+like configure, make, make install etc. You can see the source code of alps by doing:
+
+cat `which alps`
+
+The configuration file for alps is located at /etc/alps/alps.conf. This file defines variables that are useful for alps like the location of build scripts, the 
+location where source tarballs would be downloaded and so on. Inside /etc/alps/ you would find two more files : installed-list and versions. Both of these files 
+get updated as new packages get installed. The former is used to make sure packages dont get installed more than once and the second one keeps the versions of 
+the various packages.
+Source tarballs and patches downloaded by the build scripts are stored at /var/cache/alps/sources and are not deleted unless done manually. Once source tarballs 
+are downloaded, if the same package is attempted to be installed, tarball download does not happen again. This is because the build scripts do a “wget -nc” 
+which means dont download files that are already downloaded.
+Build scripts are located in /var/cache/alps/scripts directory. In this directory, the build scripts that you would find have the same name as the package they 
+help installing for instance vlc can be installed by vlc.sh. The build scripts are self sufficient to install packages and can be run without alps install 
+command. alps install just takes care of dependency resolution and updating the /etc/alps/installed-list file. Build scripts do not have write permissions on 
+them. So if you would like to modify them, then you would have to use sudo vi or sudo nano to edit them.
+Dependencies of packages in build scripts are mentioned in comments right across the top. For instance, vlc depends on qt4. This would be mentioned as a comment 
+somewhere in the top of vlc.sh:
+
+#REQ:qt4
+
+Dependencies are mentioned as Required(#REQ:), Recommended(#REC:) and Optional(#OPT). As of now, alps installs only the required and recommended dependencies 
+for a package when its installed.
+There are two types of commands you would find in the build scripts:
+
+    Commands that have to be run as the normal user
+    Commands that have to be run as root
+
+Normally configure and make commands are run as normal user and install commands are run as root. Root commands are wrapped inside a small script called 
+rootscript.sh which gets created everytime some new root command needs to be run.
+When alps fails, its primarily due to failure of build scripts. Usually in such cases the following things can be done to do a successful install:
+
+    Delete any user created by the build script. You can find that by re-running the script. The part that creates user fails in case the same script is re-run. 
+To delete the user use: sudo userdel -r <username>
+    Delete any symlinks if they were created in a previous run of the script. You would come to know about it in a similar fashion when you re-run the script.
+    Delete the directory created after untarring the source tarball in /var/cache/alps/sources
+    Manually edit the script and remove the rogue commands. For instance some scripts try building/installing documentation assuming texilive is installed.
+
+Once you have taken care of these, re-running the build script would result in successful install.
+

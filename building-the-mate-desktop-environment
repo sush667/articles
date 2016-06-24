@@ -1,0 +1,128 @@
+Building the Mate desktop environment
+Building the Mate desktop environment
+
+This article outlines the process of building the Mate desktop environment on top of the base system created using the first stage of scripts.
+
+Building the Mate desktop environment This article outlines the process of building the Mate desktop environment on top of the base system created using the 
+first stage of scripts.
+Chrooting into the base system
+
+It is assumed that if you are going to follow the steps outlined here, you must already have build a system already and you could have booted into it. The 
+system built using the first stage of scripts is a CLI based system. In case you want to create a server-like system, you may not want to install a Desktop 
+Enviornment on it. But if you are a desktop/laptop user and you want to use AryaLinux as your desktop for activities like playing music, browsing and watching 
+videos etc, then you might want to put a GUI skin right on top of the system we just built. This article outlines the process of build-installing the 
+xorg-server and Mate desktop environment which would provide GUI capabilities to the GNU/Linux system we just created.
+
+First of all we need to chroot into the system we have created so that we can build stuff from inside it. So boot using your Live Builder Disk, connect to the 
+internet by clicking the network icon in the top-right corner and execute the following commands:
+
+sudo su
+cd /root
+cd scripts
+
+Now choot into the system by entering:
+
+./enteral.sh
+
+You would be asked to provide the partition name for the base system, the swap and home partition. Provide the partition names like /dev/sda3 or /dev/sda5 or 
+whatever you gave while building initially. This would put you inside the chrooted environment. Now you need to log in as the user that was built towards the 
+end of the previous stage. I created a user called aryalinux so I would be executing the following command(Replace aryalinux with your username):
+
+su - aryalinux
+
+You should notice the prompt turning green. In case it does, well, we are good to go.
+Installing some basic packages
+
+One of the objectives of AryaLinux right from the beginning was to provide a way to carry out build-install process in a very simple manner similar to the way 
+apt-get and rpm works. Thus we ended up building alps(AryaLinux Packaging System). More about alps here. Alps got installed while we we building the 
+base-system. First Update alps and the build scripts to fetch any fixes that might have been submitted online:
+
+sudo alps updatescripts
+sudo alps selfupdate
+
+If updatescripts fails, then edit the version in the /etc/lsb-release file and change it to 2016.04. You may do that by entering the following command:
+
+sudo sed -i "s@DISTRIB_RELEASE@#DISTRIB_OLD_RELEASE@g" /etc/lsb-release
+echo "DISTRIB_RELEASE=2016.04" | sudo tee -a /etc/lsb-release
+
+Now lets use alps to install some basic packages:
+
+alps install profile nano openssl general_which wget cacerts python2 python3 ntfs-3g fuse lvm2 parted gptfdisk shadow
+su -c "alps install sudo"
+alps install usbutils pciutils openssh gobject-introspection
+
+Building the X-Server
+
+Installing the X server involves installing a lot of components that make X-Server run. But before we install all of them lets install ccache and configure to 
+use it. This is not a necessary step but greatly reduces the compilation time of llvm that is one the components that we are about to build.
+Few things dont play well with ccache. Lets install them first. While installing shared-mime-info as in the command below, alps might fail because 
+shared-mime-info does not play well with make on multiple processors. If that happens simply re-run the command and it should work just as fine.
+
+alps install libxml2 desktop-file-utils shared-mime-info
+
+Now install and enable ccache:
+
+alps install ccache
+export CC="ccache gcc"
+export CXX="ccache g++"
+export CCACHE_CPP2=yes
+
+Now lets begin installing the components of x-server. Before proceeding, do the following sed so that the build of xorg-server does not fail due to a missing 
+patch file in the BLFS book. :
+
+sudo sed -i "s@patch -Np1@#patch -Np1@g" /var/cache/alps/scripts/xorg-server.sh
+
+alps install xserver-meta
+sudo rm /etc/X11/xorg.conf.d/*
+
+Building Mate deskop environment
+
+Build Mate desktop environment by executing the following commands:
+
+NB: One of the dependencies of Mate Desktop Environment is yelp (the package that is responsible for showing the help menus in Mate applications) which in turn 
+depends on webkitgtk which takes very long to build(almost 6-7 hours on my i3-4GB RAM system). In case you don’t want to build yelp then execute this sed 
+command to turn off dependency on yelp, else skip this command and move over to the next one.
+
+sudo sed -i "s@#REQ:yelp@@g" /var/cache/alps/scripts/mate-desktop-environment.sh
+
+NB: If towards the beginning, building fails at shared-mime-info or desktop-file-utils, you simple have to reissue the command below once again and it would 
+work. It probably fails due to make running on parallel processors. Nonetheless, re-issuing the command just works fine.
+
+alps install mate-desktop-environment aryalinux-default-themes-mate
+
+This would create the basic Mate desktop and few apps like mate-terminal, engrampa, pluma etc. Wireless and Internet support would also be built in this 
+process. Once done you can now reboot and continue the rest of your installation in the newly created system. You do not need either the present Linux System or 
+Live Disk any more.
+
+When you reboot, your desktop may not be looking very interesting. In order to apply the AryaLinux customizations enter the following in a terminal:
+
+alps install mate-aryalinux-themes
+
+If you want a nice bootsplash screen shown while booting instead of the familiar console messages, then install plymouth:
+
+alps install plymouth
+
+To install bluetooth support enter the following commands:
+
+alps install blueman
+
+The Mate desktop that gets installed above is very basic with very few applications. In case you want audio-video codecs:
+
+alps install audio-video-plugins
+
+For Printing and scanning support install:
+
+alps install cups cups-filters sane simple-scan
+
+Other applications that can be installed at this stage are: firefox-bin, thunderbird-bin, pidgin, transmission, xchat, gimp, atril, libreoffice, 
+simple-screen-recorder, vlc, audacious
+Issues and Troubleshooting
+
+If you are not able to boot into lightdm – the graphical login screen, then probably the graphics driver for your system were not built into the kernel or the 
+driver was not built with X-Server. You need to install those drivers first and then you would be able to log into the Graphical Desktop.
+
+Touchpad tap might not be enabled when you boot for the first time. Read this article to know how to enable touchpad tap for click.
+
+While the build process was going on, you encountered an error. In such a case just re-run the previous command and you should be good this time. In case it 
+still fails, please drop a mail to us at aryalinux11@gmail.com and we would take a look into it.
+
