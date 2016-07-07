@@ -1,0 +1,45 @@
+In order to install the LAMP stack, you need to install apache, mysql and php.
+Issue the following commands to install the lamp stack:
+
+alps install apache mysql php
+
+The mysql build script would ask for the root password after installing mysql.
+You need to enter the root password when asked for. During the installation of
+net-snmp, you would be asked to press enter 3-4 times. Press enter 3-4 times
+when asked and net-snmp script would start building. Once that is done, php
+would get installed.
+
+Now start the servers:
+
+sudo systemctl enable {mysqld,php-fpm,httpd}
+sudo systemctl start {mysqld,php-fpm,httpd}
+
+sudo chmod -R a+rw /srv/www/
+
+The build scripts follow the server directory hierarchy that is used in BLFS.
+Hence the document root for apache would be at /srv/www. Let's create a php
+file in this location to see if things went fine:
+
+cat > /srv/www/info.php<<EOF
+<?php phpinfo();?>
+EOF
+
+Now open up the browser and access the following URL:
+
+http://localhost/info.php
+
+You should be able to see the PHP's info page.
+
+To check mysql run the following command from terminal:
+
+mysql -uroot -p<root password>
+
+In the above command replace <root password> with the password you gave to the
+mysql build script. This should show you the mysql prompt. You can run quit at
+the mysql prompt to exit.
+
+Finally you may set index.php as the default page to be used as directory index.
+Run the following sed command to use index.php as the directory index page:
+
+sed -i "s@DirectoryIndex index.html@DirectoryIndex index.html index.php@g"
+
