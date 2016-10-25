@@ -1,0 +1,28 @@
+alps install libreoffice
+
+Notes
+
+Libreoffice is one of the packages which need the internet connection to be working during the make process because it downloads tarballs that would be used in the build process.
+
+One of the dependencies of libreoffice: postresql has some issues with being installed via a script. Therefore building postgresql might fail in the first attempt. I've noticed this issue while building 64 bit AryaLinux. The script usually breaks after the server is started and database tables need to be created. So these two commands need to be run before trying to re-install postgresql:
+
+sudo killall postgres
+sudo userdel -r posrtgres
+
+Then reissue the command to install libreoffice:
+
+alps install libreoffice
+
+This time the process should get through without problems.
+
+Look and feel of libreoffice:
+
+The icons of libreoffice make not look very appealing to some. In such cases you can change the icons that appear at the tool bar by going to:
+
+Tools -> Options -> View
+
+and changing the icons size to small and icons to Sifr. You may also if you want choose option to show the icons on menus. Once that is done, click apply and restart libreoffice.
+
+Libreoffice usually does'nt take up changes to the system appearance in a single shot. It needs to be restarted if you changed the system look and feel.
+
+There is an issue with some themes and libreoffice. In fact it is difficult to say whose issue it is but with some themes when you move you mouse over multiple items in libreoffice, you tend to get a thin line in the left border of libreoffice. Some themes do not result in such artifacts for example GreyBird. In case this seems irritating to you then please go ahead and install some other theme(like Greybird) and then set the system to use that theme. Keep in mind that Greybird is not a GTK-3.20+ theme so some of your applications might look broken.

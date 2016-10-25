@@ -1,0 +1,15 @@
+alps install mate-desktop-environment
+
+Notes
+
+The Mate desktop environment is built on top of the following gtk version:
+
+Mate 1.15 (AyraLinux Saavan 2016.08) - gtk-3.20
+Mate 1.12 (AryaLinux Dawn of justice 2016.08) - gtk-2.x
+
+This is one major reason why not all themes that used to work in AryaLinux Mate 2016.04 would work in AryaLinux Mate 2016.08. The reason behind this is the change in the way themes are interpreted in gtk made by the gtk developers. There are some themes that have support both gtk2, < gtk3.20 and >= gtk3.20. These are the themes:
+
+adapta
+arc
+
+The install command for mate shown above would only install the basic desktop environment 

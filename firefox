@@ -1,0 +1,30 @@
+alps install firefox
+
+You can also install the binary version of firefox by running the following command:
+
+alps install firefox-bin
+
+This would download the latest binaries from firefox servers for the language that you choose and install it. Installation is done in the /opt directory so that later you might remove this version of firefox and install some other version. Despite being installed in /opt some files like:
+
+firefox.desktop (/usr/share/applications/firefox.desktop)
+firefox.png (/usr/share/pixmaps/firefox.png)
+
+are created in /usr.
+
+Notes:
+
+Firefox does'nt play well with dark themes. This is'nt a new thing for people who've been using firefox on linux for a while but the casual new user might think its strange and quirky.
+
+No loading icon shown on tabs
+
+If you install firefox from source you might not get the loading icon on the tabs that you open.
+
+Fonts issue in firefox:
+
+If firefox renders ugly fonts, you might go ahead and delete fonts in /usr/share/fonts/<-----> directory by doing:
+
+sudo rm -r /usr/share/fonts/<----->
+
+Tabs are not saved on exit:
+
+If you build firefox from source tabs would not be saved on exit. For that you need to install firefox-bin. See the top of the page for instructions to do so.

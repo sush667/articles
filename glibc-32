@@ -1,0 +1,19 @@
+How to build glibc 32 bit on 64 bit aryalinux:
+
+../configure --prefix=/usr/lib32 \
+ --host=i686-linux-gnu \
+ --build=i686-linux-gnu \
+ CC="gcc -m32" CXX="g++ -m32" \
+ CFLAGS="-O2 -march=i686" \
+ CXXFLAGS="-O2 -march=i686"
+
+
+
+binutils
+
+./configure \
+--build-i686-linux-gnu \
+--host=i686-linux-gnu \
+--target=i686-linux-gnu \
+--enable-64-bit-bfd \
+--with-libpath=/usr/lib32
